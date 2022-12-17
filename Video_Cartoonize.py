@@ -1,54 +1,56 @@
-# import cv2
- 
-# capture = cv2.VideoCapture('E:/CS231/CS231_Nhap_Mon_Thi_Giac_May_Tinh/Normal_Ocean_Wave.mp4')
- 
-# frameNr = 0
- 
-# while (True):
- 
-#     success, frame = capture.read()
- 
-#     if success:
-#         cv2.imwrite(f'E:\CS231\CS231_Nhap_Mon_Thi_Giac_May_Tinh\frames_output\frame_{frameNr}.jpg', frame)
- 
-#     else:
-#         break
- 
-#     frameNr = frameNr+1
- 
-# capture.release()
-
-
 import cv2
 import numpy as np
  
-# Create a VideoCapture object and read from input file
-# If the input is the camera, pass 0 instead of the video file name
-cap = cv2.VideoCapture('Normal_Ocean_Wave.mp4')
- 
-# Check if camera opened successfully
-if (cap.isOpened()== False): 
+capture = cv2.VideoCapture('E:/CS231/CS231_Nhap_Mon_Thi_Giac_May_Tinh/nice ocean waves remix.mp4')
+
+if (capture.isOpened()== False): 
   print("Error opening video stream or file")
+
+else:
+  # Get frame rate information
+  # You can replace 5 with CAP_PROP_FPS as well, they are enumerations
+  fps = capture.get(5)
+  print('Frames per second : ', fps,'FPS')
  
-# Read until video is completed
-while(cap.isOpened()):
-  # Capture frame-by-frame
-  ret, frame = cap.read()
-  if ret == True:
+  # Get frame count
+  # You can replace 7 with CAP_PROP_FRAME_COUNT as well, they are enumerations
+  frame_count = capture.get(7)
+  print('Frame count : ', frame_count)
+
+frameNr = 0
  
-    # Display the resulting frame
-    cv2.imshow('Frame',frame)
+while (True):
  
-    # Press Q on keyboard to  exit
-    if cv2.waitKey(25) & 0xFF == ord('q'):
-      break
+  success, frame = capture.read()
  
-  # Break the loop
-  else: 
+  if not success:
     break
+
+  gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+  blur = cv2.medianBlur(gray, 5)
+  edges = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY, 9, 9)
+  
+  color = cv2.bilateralFilter(frame, 9, 250, 250)
+  cartoon = cv2.bitwise_and(color, color, mask=edges)
+
+  cv2.imwrite(f'E:/CS231/CS231_Nhap_Mon_Thi_Giac_May_Tinh/frames_output/frame_{frameNr}.jpg', cartoon)
  
-# When everything done, release the video capture object
-cap.release()
+  frameNr = frameNr+1
  
-# Closes all the frames
-cv2.destroyAllWindows()
+capture.release()
+
+
+img_array = []
+
+for x in range (0, 867):
+  img = cv2.imread('E:/CS231/CS231_Nhap_Mon_Thi_Giac_May_Tinh/frames_output/frame_{0}.jpg'.format(x))
+  height, width, layers = img.shape
+  size = (width,height)
+  img_array.append(img)
+
+video = cv2.VideoWriter('E:/CS231/CS231_Nhap_Mon_Thi_Giac_May_Tinh/output_vid.mp4',cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 30, size)
+ 
+for i in range(len(img_array)):
+    video.write(img_array[i])
+video.release()
+
