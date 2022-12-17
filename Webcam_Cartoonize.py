@@ -13,8 +13,7 @@ while(webcam.isOpened()):
     # Capture frame-by-frame
     ret, frame = webcam.read()
     if ret == True:
-        # Flip mirro
-        frame = cv2.flip(frame, 1)
+        frame = cv2.flip(frame, 1) # Flip mirror
         color = cv2.bilateralFilter(frame, 9, 9, 7)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.medianBlur(gray, 7)

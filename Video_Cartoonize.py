@@ -8,12 +8,9 @@ if (capture.isOpened()== False):
 
 else:
   # Get frame rate information
-  # You can replace 5 with CAP_PROP_FPS as well, they are enumerations
   fps = capture.get(5)
   print('Frames per second : ', fps,'FPS')
- 
   # Get frame count
-  # You can replace 7 with CAP_PROP_FRAME_COUNT as well, they are enumerations
   frame_count = capture.get(7)
   print('Frame count : ', frame_count)
 
